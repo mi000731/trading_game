@@ -262,10 +262,8 @@ function selectAction(action) {
   if (btn) btn.classList.add('active');
 }
 function changeQuantity(change) {
-  const quantityInput = document.getElementById('quantity');
-  let value = parseInt(quantityInput.value) || 0;
-  value = Math.max(0, value + change);
-  quantityInput.value = value;
+  quantity = Math.max(0, quantity + change);
+  document.getElementById('quantity').textContent = quantity;
 }
 function executeTrade(type) {
   if (!selectedAction || selectedAction === 'hold') {
@@ -278,7 +276,7 @@ function executeTrade(type) {
     return;
   }
 
-  const amount = parseInt(document.getElementById('quantity').value) || 1;
+  const amount = quantity;
   const action = `${selectedAction}-${type}`;
   nextDay(action, amount);
 }
@@ -877,21 +875,6 @@ document.addEventListener('DOMContentLoaded', () => {
    
   loadStockNameMap();  // 🔥 一進網頁就讀取 name.csv
   showOverlayIfNeeded();  // 🔥 啟動時判斷要不要開啟透明按鈕
-  const quantityInput = document.getElementById('quantity');
-
-// 🔥 點到數字框，解除readonly，可以輸入
-quantityInput.addEventListener('click', () => {
-  quantityInput.readOnly = false;
-  quantityInput.style.backgroundColor = 'white';
-  quantityInput.style.color = 'black';
-});
-
-// 🔥 輸入完離開（失焦）自動恢復readonly
-quantityInput.addEventListener('blur', () => {
-  quantityInput.readOnly = true;
-  quantityInput.style.backgroundColor = 'black';
-  quantityInput.style.color = 'white';
-});
   document.getElementById('csvFile').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1146,25 +1129,3 @@ function updateProgressBar(percent) {
     bar.style.width = `${percent}%`;
   }
 }
-function changeQuantity(change) {
-  const quantityInput = document.getElementById('quantity');
-  let value = parseInt(quantityInput.value) || 0;
-  value = Math.max(0, value + change);
-  quantityInput.value = value;
-}
-
-const quantityInput = document.getElementById('quantity');
-
-// 當點到數字框時，移除readonly，變成可以編輯
-quantityInput.addEventListener('click', () => {
-  quantityInput.readOnly = false;
-  quantityInput.style.backgroundColor = 'white';  // 背景白色
-  quantityInput.style.color = 'black';            // 字黑色
-});
-
-// 當輸入完（離開input）時，變回readonly，恢復黑底白字
-quantityInput.addEventListener('blur', () => {
-  quantityInput.readOnly = true;
-  quantityInput.style.backgroundColor = 'black';  // 背景黑色
-  quantityInput.style.color = 'white';            // 字白色
-});
