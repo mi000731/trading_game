@@ -1132,3 +1132,18 @@ function updateProgressBar(percent) {
   }
 }
 
+const quantityInput = document.getElementById('quantity');
+
+// 當點到數字框時，移除readonly，變成可以編輯
+quantityInput.addEventListener('click', () => {
+  quantityInput.readOnly = false;
+  quantityInput.style.backgroundColor = 'white';  // 背景白色
+  quantityInput.style.color = 'black';            // 字黑色
+});
+
+// 當輸入完（離開input）時，變回readonly，恢復黑底白字
+quantityInput.addEventListener('blur', () => {
+  quantityInput.readOnly = true;
+  quantityInput.style.backgroundColor = 'black';  // 背景黑色
+  quantityInput.style.color = 'white';            // 字白色
+});
