@@ -278,7 +278,7 @@ function executeTrade(type) {
     return;
   }
 
-  const amount = quantity;
+  const amount = parseInt(document.getElementById('quantity').value) || 1;
   const action = `${selectedAction}-${type}`;
   nextDay(action, amount);
 }
