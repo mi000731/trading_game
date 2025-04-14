@@ -1131,6 +1131,12 @@ function updateProgressBar(percent) {
     bar.style.width = `${percent}%`;
   }
 }
+function changeQuantity(change) {
+  const quantityInput = document.getElementById('quantity');
+  let value = parseInt(quantityInput.value) || 0;
+  value = Math.max(0, value + change);
+  quantityInput.value = value;
+}
 
 const quantityInput = document.getElementById('quantity');
 
