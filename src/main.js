@@ -262,8 +262,10 @@ function selectAction(action) {
   if (btn) btn.classList.add('active');
 }
 function changeQuantity(change) {
-  quantity = Math.max(0, quantity + change);
-  document.getElementById('quantity').textContent = quantity;
+  const quantityInput = document.getElementById('quantity');
+  let value = parseInt(quantityInput.value) || 0;
+  value = Math.max(0, value + change);
+  quantityInput.value = value;
 }
 function executeTrade(type) {
   if (!selectedAction || selectedAction === 'hold') {
