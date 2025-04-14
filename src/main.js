@@ -108,115 +108,69 @@ function drawChart() {
 
   document.getElementById('chart').innerHTML = '';
 
-  // === 建立K線圖 ===
-  chart = LightweightCharts.createChart(document.getElementById('chart'), {
-    width: 600,
-    height: 400,
-    rightPriceScale: { visible: true },
-    layout: { background: { color: '#ffffff' }, textColor: '#000' },
-    grid: { vertLines: { color: '#eee' }, horzLines: { color: '#eee' } },
-    timeScale: {
-      rightOffset: 10,   
-      barSpacing: 8,
-      fixLeftEdge: true,
-      lockVisibleTimeRangeOnResize: true
-    },
-    handleScroll: {
-      pressedMouseMove: true,
-      horzTouchDrag: true
-    }
-  });
-
-  candleSeries = chart.addCandlestickSeries();
-
-  let animationIndex = Math.max(0, currentIndex - 20);
-  let targetIndex = currentIndex;
-  
-  let animatedData = []; // ✨ 所有動畫中的資料
-
-  // 先預設20天範圍，開盤高低收都一樣，確保框架大小正常
-  for (let i = animationIndex; i <= targetIndex; i++) {
-    const row = stockData[i];
-    if (row) {
-      animatedData.push({
-        time: i,
-        open: +row.Open,
-        high: +row.Open,
-        low: +row.Open,
-        close: +row.Open
-      });
-    }
+ // === 建立K線圖 ===
+chart = LightweightCharts.createChart(document.getElementById('chart'), {
+  width: 600,
+  height: 400,
+  rightPriceScale: { visible: true },
+  layout: { background: { color: '#ffffff' }, textColor: '#000' },
+  grid: { vertLines: { color: '#eee' }, horzLines: { color: '#eee' } },
+  timeScale: {
+    rightOffset: 10,
+    barSpacing: 8,
+    fixLeftEdge: true,
+    lockVisibleTimeRangeOnResize: true
+  },
+  handleScroll: {
+    pressedMouseMove: true,
+    horzTouchDrag: true
   }
-  candleSeries.setData(animatedData); // ✨ 一開始就畫20根開盤的小棒子出來
+});
 
-  chart.timeScale().fitContent(); // ✨ 馬上拉正時間範圍（一開始就正常）
+candleSeries = chart.addCandlestickSeries();
 
-  // 然後開始補動畫
-  const interval = setInterval(() => {
-    if (animationIndex > targetIndex) {
-      clearInterval(interval);
-      chartInitialized = true;
-      return;
+// ✨ 只讀取18筆資料
+let initCount = 18; // 顯示18根K線
+let startIndex = Math.max(0, currentIndex - initCount + 1);
+let endIndex = currentIndex;
+
+let initialData = [];
+
+for (let i = startIndex; i <= endIndex; i++) {
+  const row = stockData[i];
+  if (row) {
+    let open = +row.Open;
+    let high = +row.High;
+    let low = +row.Low;
+    let close = +row.Close;
+
+    // ✨ 高低價異常修正（防爆衝）
+    if (Math.abs(high - open) > open * 0.3 || Math.abs(high - close) > close * 0.3) {
+      high = Math.max(open, close) * 1.03;
+    }
+    if (Math.abs(low - open) > open * 0.3 || Math.abs(low - close) > close * 0.3) {
+      low = Math.min(open, close) * 0.97;
     }
 
-    const row = stockData[animationIndex];
-    const open = +row.Open;
-    const high = +row.High;
-    const low = +row.Low;
-    const targetClose = +row.Close;
-    let currentClose = open;
+    initialData.push({
+      time: i,
+      open: open,
+      high: high,
+      low: low,
+      close: close
+    });
+  }
+}
 
-    // ✨ 開始慢慢動態更新收盤價 + 高低點
-    const moveInterval = setInterval(() => {
-      if (Math.abs(currentClose - targetClose) < 0.1) {
-        // 最後直接到收盤價
-        animatedData[animationIndex - (currentIndex - 20)] = {
-          time: animationIndex,
-          open: open,
-          high: high,
-          low: low,
-          close: targetClose
-        };
-        candleSeries.setData(animatedData);
-        console.log(`畫K線 #${animationIndex}`, {
-  open: open,
-  high: high,
-  low: low,
-  close: currentClose
-});
-        
-        clearInterval(moveInterval);
-      } else {
-        // 每次微調
-// 🔥 最後一天慢慢停下來的收盤價微調
-let diff = targetClose - currentClose;
-currentClose += diff * 0.2; // 每次只前進剩下距離的20%
+// ✨ 直接一次畫出18筆資料
+candleSeries.setData(initialData);
 
-        // ✨ 注意：高低價也要一起動態更新！（這樣K線不會扭曲）
-        const dynamicHigh = Math.max(open, currentClose, high);
-        const dynamicLow = Math.min(open, currentClose, low);
+// ✨ 拉正時間軸
+chart.timeScale().fitContent();
 
-        animatedData[animationIndex - (currentIndex - 20)] = {
-          time: animationIndex,
-          open: open,
-          high: dynamicHigh,
-          low: dynamicLow,
-          close: currentClose
-        };
-        candleSeries.setData(animatedData);
-        console.log(`畫K線 #${animationIndex}`, {
-  open: open,
-  high: high,
-  low: low,
-  close: currentClose
-});
-      }
+// ✨ 標記初始化完成
+chartInitialized = true;
 
-      chart.timeScale().scrollToRealTime(); // ✨ 一直保持最新
-    }, 30);
-
-    animationIndex++;
-  }, 200); // 每0.2秒新增一天
 }
 
 function loadStockNameMap() {
@@ -729,53 +683,34 @@ function executeTradingAction(action, amount, price) {
 }
 
 
-
 function updateChartData() {
   if (!chartInitialized) {
     drawChart();
   } else {
     const row = stockData[currentIndex];
-    let currentClose = +row.Open;  // 從開盤價開始
-    const targetClose = +row.Close; // 目標收盤價
     const open = +row.Open;
-    const high = +row.High;
-    const low = +row.Low;
+    let high = +row.High;
+    let low = +row.Low;
+    const close = +row.Close;
 
-    // 先加一根從開盤價開始的
+    // ✨ 高低價防爆衝（跟初始化一樣）
+    if (Math.abs(high - open) > open * 0.3 || Math.abs(high - close) > close * 0.3) {
+      high = Math.max(open, close) * 1.03;
+    }
+    if (Math.abs(low - open) > open * 0.3 || Math.abs(low - close) > close * 0.3) {
+      low = Math.min(open, close) * 0.97;
+    }
+
+    // ✨ 直接一次更新一根K線
     candleSeries.update({
       time: currentIndex,
       open: open,
-      high: open,
+      high: high,
       low: low,
-      close: open
+      close: close
     });
 
-    // ✨ 慢慢動態漲到收盤價
-    const moveInterval = setInterval(() => {
-      if (Math.abs(currentClose - targetClose) < 0.1) {
-        // 到達收盤價，停下來
-        candleSeries.update({
-          time: currentIndex,
-          open: open,
-          high: high,
-          low: low,
-          close: targetClose
-        });
-        clearInterval(moveInterval);
-      } else {
-        // 慢慢往收盤價靠近
-        currentClose += (targetClose > open ? 0.5 : -0.5);
-        candleSeries.update({
-          time: currentIndex,
-          open: open,
-          high: high,
-          low: low,
-          close: currentClose
-        });
-      }
-
-      chart.timeScale().scrollToRealTime(); // ✨ 滑到最右邊
-    }, 30); // 每30毫秒滑動一次收盤價
+    chart.timeScale().scrollToRealTime(); // ✨ 滑到最右邊
   }
 }
 
@@ -1034,7 +969,7 @@ function fixInvalidData(row, index) {
     let value = parseFloat(row[field]);
     if (isNaN(value) || value < 0 || value > 100000) {
       const fallback = getFallbackPrice(index);
-      const randomFactor = 1 + (Math.random() * 0.02 - 0.01);  // ±1% 隨機
+      const randomFactor = 1 + (Math.random() * 0.005 - 0.01);  // ±1% 隨機
       row[field] = (fallback * randomFactor).toFixed(2);
     }
   });
