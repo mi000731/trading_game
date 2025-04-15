@@ -11,6 +11,22 @@
 </head>
   
 <body>
+<button id="toggle-right-btn" style="
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 999;
+  padding: 10px 15px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  display: none; /* 預設隱藏，手機版才出現 */
+">
+  顯示資產狀態
+</button>
+
   <!-- 🔥 一開始透明全螢幕按鈕 -->
 <div id="overlay-button" onclick="triggerDownload()" style="
   position: fixed;
@@ -23,7 +39,7 @@
   display: none; /* 預設不顯示，程式控制開啟 */
 "></div>
 
-  <div id="left">
+  <div id="left" style="flex: 1;">
     <div id="chart-container">
    <div id="chart-overlay">
   <div id="stock-name" style="font-size: 18px; font-weight: bold; color: white;">股票名稱 股票代碼</div>
@@ -40,8 +56,8 @@
 <div class="controls" style="width: 100%; max-width: 400px; margin: 0 auto;">
   <!-- ✨ 最上排：睡覺 + 數量控制 -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%;">
-    <button class="hold-btn" style="padding: 8px 50x; display: inline-block;" onclick="nextDay()">睡</button>
-
+    
+<button class="hold-btn" style="padding: 8px 50x; display: inline-block;" onclick="nextDay()">睡</button>
     <div class="quantity-control" style="display: inline-flex; align-items: center;">
       <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
       <div class="quantity-value" id="quantity" style="min-width: 30px; text-align: center;">0</div>
@@ -69,7 +85,7 @@
       </div>
   </div>
 
-  <div id="right">
+  <div id="right" style="flex: 1;">
     <div class="controls-top">
       <input type="file" id="csvFile" accept=".csv,.html">
 
@@ -161,8 +177,8 @@
     <!-- ✨ 新增結束 ✨ -->
 
   </div>
-
-  <div id="initialCapitalDialog" style="display: none;">
+<div id="dialogOverlay" style="display: none;"></div>
+<div id="initialCapitalDialog" style="display: none;">
     <h3>從銀行轉入多少資金?</h3>
     <input type="number" id="initialCapital" value="1000000" min="10000" step="10000">
     <div>
