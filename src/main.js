@@ -110,13 +110,13 @@ function drawChart() {
 
  // === 建立K線圖 ===
 chart = LightweightCharts.createChart(document.getElementById('chart'), {
-  width: 600,
+  width: 500,
   height: 400,
   rightPriceScale: { visible: true },
   layout: { background: { color: '#ffffff' }, textColor: '#000' },
   grid: { vertLines: { color: '#eee' }, horzLines: { color: '#eee' } },
   timeScale: {
-    rightOffset: 10,
+    rightOffset: 5,
     barSpacing: 8,
     fixLeftEdge: true,
     lockVisibleTimeRangeOnResize: true
