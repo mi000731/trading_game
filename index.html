@@ -105,16 +105,7 @@
       <!-- ✨ 新增結束 ✨ -->
 
       <!-- 初始資金彈窗 -->
-      <div id="dialogOverlay" style="display: none;"></div>
-      <div id="initialCapitalDialog" style="display: none;">
-        <h3>從銀行轉入多少資金?</h3>
-        <input type="number" id="initialCapital" value="1000000" min="10000" step="10000">
-        <div>
-          <button onclick="setInitialCapital(1000000)">100萬</button>
-          <button onclick="setInitialCapital(500000)">50萬</button>
-          <button onclick="confirmInitialCapital()">確認</button>
-        </div>
-      </div>
+      
     </div>
   </div>
   <!-- 只保留這顆 ☰ 按鈕 -->
@@ -183,5 +174,15 @@
   
 
   <script src="src/main.js"></script>
+  <div id="dialogOverlay" style="display: none;"></div>
+      <div id="initialCapitalDialog" style="display: none;">
+        <h3 style="color: white;">從銀行轉入多少資金?</h3>
+        <input type="number" id="initialCapital" value="1000000" min="10000" step="10000">
+        <div>
+          <button onclick="setInitialCapital(1000000)">100萬</button>
+          <button onclick="setInitialCapital(500000)">50萬</button>
+          <button onclick="confirmInitialCapital()">確認</button>
+        </div>
+      </div>
 </body>
 </html>
