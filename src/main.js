@@ -195,18 +195,23 @@ function loadStockNameMap() {
 
 // === 初始資金設定 ===
 function showInitialCapitalDialog() {
+  document.getElementById('dialogOverlay').style.display = 'block';
   document.getElementById('initialCapitalDialog').style.display = 'block';
 }
+
 function setInitialCapital(amount) {
   document.getElementById('initialCapital').value = amount;
 }
+
 function confirmInitialCapital() {
   const input = document.getElementById('initialCapital').value;
   initialCapital = parseInt(input) || 1000000;
   cash = initialCapital;
   document.getElementById('initialCapitalDialog').style.display = 'none';
+  document.getElementById('dialogOverlay').style.display = 'none'; // 關閉遮罩
   updateUI();
 }
+
 
 // === 操作按鈕 ===
 function selectAction(action) {
@@ -883,11 +888,18 @@ async function downloadStock() {
       return;
     }
 
+    // ✅ 從 stockNameMap 尋找公司名稱
+    stockName = stockNameMap[stockCode] || "未知公司";
+    if (stockName === "未知公司") {
+      alert("⚠️ 找不到對應的公司名稱，請確認代碼或更新 name.csv");
+    }
+
     const today = new Date();
     const requests = [];
 
     // 🔥 清空進度條
     updateProgressBar(0);
+
 
     for (let i = 0; i < 12; i++) {
       const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
@@ -1064,3 +1076,11 @@ function updateProgressBar(percent) {
     bar.style.width = `${percent}%`;
   }
 }
+document.getElementById('toggle-right-btn').addEventListener('click', () => {
+  const rightPanel = document.getElementById('right');
+  if (rightPanel.style.display === 'none' || rightPanel.style.display === '') {
+    rightPanel.style.display = 'block';
+  } else {
+    rightPanel.style.display = 'none';
+  }
+});
