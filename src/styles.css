@@ -180,8 +180,8 @@ td, th {
   font-weight: bold;
   font-size: 32px;
   position: absolute;
-  top: 450px;
-  left: 540px;
+  top: 400;
+  left: 840px;
 }
 .quantity-value {
   width: 30px;       /* 變小 */
@@ -228,7 +228,7 @@ td, th {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* 完美水平垂直置中 */
-  background-color: white;
+  background-color: black;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
