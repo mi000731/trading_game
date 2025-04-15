@@ -21,6 +21,7 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  
 }
 
 #chart-container {
@@ -157,22 +158,35 @@ td, th {
 }
 
 .quantity-btn {
-  width: 60px;
-  height: 60px;
+  width: 30px;       /* 原本60 ➔ 縮小一半 */
+  height: 30px;      /* 原本60 ➔ 縮小一半 */
   background-color: #333;
   color: white;
   border: none;
-  font-size: 40px;
+  font-size: 20px;   /* 字體也縮小一半 */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.quantity-value {
-  width: 50px;
-  text-align: center;
+.hold-btn {
+  padding: 10px 30px;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
   font-size: 32px;
+  position: absolute;
+  top: 450px;
+  left: 540px;
+}
+.quantity-value {
+  width: 30px;       /* 變小 */
+  text-align: center;
+  font-size: 20px;   /* 原本32px ➔ 改20px */
   font-weight: bold;
   color: white;
 }
@@ -184,7 +198,7 @@ td, th {
 }
 
 .buy-btn {
-  padding: 10px 15px;
+  padding: 20px 15px;
   background-color: #ff4d4d;
   color: white;
   border: none;
@@ -196,7 +210,7 @@ td, th {
 }
 
 .sell-btn {
-  padding: 10px 15px;
+  padding: 20px 15px;
   background-color: #4dff4d;
   color: black;
   border: none;
@@ -207,32 +221,30 @@ td, th {
   text-align: center;
 }
 
-.hold-btn {
-  padding: 20px 30px;
-  background-color: white;
-  color: black;
-  border: 2px solid black;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 32px;
-  position: absolute;
-  top: 650px;
-  left: 10px;
-}
 
-/* Initial Capital Dialog */
+
 #initialCapitalDialog {
-  position: fixed;
+  position: fixed; /* 不隨捲動影響，釘在畫面上 */
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); /* 完美水平垂直置中 */
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   z-index: 1000;
   text-align: center;
+  max-width: 90vw;  /* ✅ 避免在手機太寬 */
+  box-sizing: border-box;
+}
+#dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3); /* 淡淡的黑色半透明 */
+  z-index: 999;
 }
 
 #initialCapitalDialog input {
