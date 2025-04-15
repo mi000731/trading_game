@@ -891,7 +891,10 @@ async function downloadStock() {
     // ✅ 嘗試從 name.csv 對照表找公司名稱（找不到就顯示 "未知公司"）
     stockName = stockNameMap[stockCode] || "未知公司";
 
-
+    // ✅ 如果找不到名稱，只提示一次，然後繼續執行就好，不中斷
+    if (stockName === "未知公司") {
+      console.warn("⚠️ 未從 name.csv 找到對應公司名稱，將顯示為『未知公司』");
+    }
 
     const today = new Date();
     const requests = [];
@@ -1084,3 +1087,10 @@ document.getElementById('toggle-right-btn').addEventListener('click', () => {
     rightPanel.style.display = 'none';
   }
 });
+const rightFloating = document.getElementById('right-floating');
+const toggleBtn = document.getElementById('toggle-right');
+
+function toggleRightPanel() {
+  const panel = document.getElementById('right-floating');
+  panel.classList.toggle('hidden');
+}
